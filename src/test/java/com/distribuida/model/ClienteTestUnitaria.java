@@ -3,8 +3,7 @@ package com.distribuida.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClienteTestUnitaria {
 
@@ -49,6 +48,21 @@ public class ClienteTestUnitaria {
                 () -> assertEquals("Direccion2", cliente.getDireccion()),
                 () -> assertEquals("0987654222", cliente.getTelefono()),
                 () -> assertEquals("jtaipe22@correo.com", cliente.getCorreo())
+        );
+
+    }
+
+    @Test
+    public void clienteTestToString(){
+        String str = cliente.toString();
+        assertAll("Validar datos cliente - To String",
+                () -> assertTrue(str.contains("1")),
+                () -> assertTrue(str.contains("1701234567")),
+                () -> assertTrue(str.contains("Juan")),
+                () -> assertTrue(str.contains("Taipe")),
+                () -> assertTrue(str.contains("Direccion1")),
+                () -> assertTrue(str.contains("0987654321")),
+                () -> assertTrue(str.contains("jtaipe@correo.com"))
         );
 
     }
