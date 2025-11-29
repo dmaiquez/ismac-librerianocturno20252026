@@ -11,6 +11,8 @@ import org.springframework.test.annotation.Rollback;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
@@ -24,6 +26,8 @@ public class ClienteTestIntegracion {
     @Test
     public void testClienteFindAll(){
         List<Cliente> clientes = clienteRepository.findAll();
+        assertNotNull(clientes);
+        assertTrue(clientes.size() > 0);
         for (Cliente item: clientes){
             System.out.println(item.toString());
         }
@@ -33,6 +37,9 @@ public class ClienteTestIntegracion {
     @Test
     public void testClienteFindOne(){
         Optional<Cliente> cliente = clienteRepository.findById(1);
+        assertNotNull(cliente.isPresent());
+        assertEquals("Puro",cliente.orElse(null).getNombre());
+        assertEquals("Hueso",cliente.orElse(null).getApellido());
         System.out.println(cliente);
 
     }
@@ -41,12 +48,19 @@ public class ClienteTestIntegracion {
     @Test
     public void testClienteSave(){
         Cliente cliente = new Cliente(0,"1701234577","Juan77","Taipe77","Direccion77","0987654777","jtaipe77@correo.com");
-        clienteRepository.save(cliente);
+        Cliente clienteGuardado = clienteRepository.save(cliente);
+
+        assertNotNull(clienteGuardado);
+        assertEquals("1701234577", clienteGuardado.getCedula());
+        assertEquals("Juan77", clienteGuardado.getNombre());
+
     }
 
     @Test
     public void testClienteActualizar(){
         Optional<Cliente> cliente2 = clienteRepository.findById(39);
+
+        assertTrue(cliente2.isPresent());
 
         cliente2.orElse(null).setCedula("17012345688");
         cliente2.orElse(null).setNombre("Juan88");
@@ -55,13 +69,20 @@ public class ClienteTestIntegracion {
         cliente2.orElse(null).setTelefono("0978654388");
         cliente2.orElse(null).setCorreo("jtaipe88@correo.com");
 
-        clienteRepository.save(cliente2.orElse(null));
+        Cliente clienteActualizado = clienteRepository.save(cliente2.orElse(null));
 
+        assertNotNull(clienteActualizado);
+        assertEquals("Taipe88", clienteActualizado.getApellido());
+        assertEquals("Direccion88", clienteActualizado.getDireccion());
 
     }
 
     @Test
     public void testClienteBorrar(){
-        clienteRepository.deleteById(39);
+        if(clienteRepository.existsById(39)){
+            clienteRepository.deleteById(39);
+        }
+        assertFalse(clienteRepository.existsById(39));
     }
+
 }
